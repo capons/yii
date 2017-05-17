@@ -9,7 +9,6 @@ use yii\db\ActiveRecord;
 
 class Image extends  ActiveRecord
 {
-   
 
     public static function tableName()
     {
@@ -19,12 +18,12 @@ class Image extends  ActiveRecord
     public function fields()
     {
         return [
-            // field name is the same as the attribute name
             'filepath',
+            'angle',
+            'id'
         ];
     }
-
-
+    //related with user Model
     public function getCustomer()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);

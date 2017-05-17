@@ -3,11 +3,15 @@ namespace frontend\controllers;
 
 use common\models\Image;
 use common\models\User;
+use frontend\models\ImageAngle;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-
+use frontend\models\UploadImage;
+use yii\data\ActiveDataProvider;
+use yii\web\UploadedFile;
+use yii\helpers\Url;
 
 class ImageController extends Controller
 {
@@ -16,7 +20,6 @@ class ImageController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-              //  'only' => ['create', 'update'],
                 'rules' => [
                     // allow authenticated users
                     [
@@ -27,35 +30,60 @@ class ImageController extends Controller
             ],
         ];
     }
-
-
-
+    //default page
     public function actionIndex()
     {
-        //Yii::$app->user->identity;//
-        $user = Yii::$app->user->identity;;
-        $ua = new Image();
-        $ua->filepath = 'City';
-        $user->link('images', $ua);
+        $model = new UploadImage();
+        if ($model->load(Yii::$app->request->post())) {
+            $model->filepath = UploadedFile::getInstance($model, 'filepath');
+            if ($user = $model->upload()) {
 
+            }
+        }
 
-        /*
-         * display
-        echo '<pre>';
-        $user = User::findOne(1);
-        print_r($user->images);
-        echo '</pre>';
-        */
+        $query = Image::find()->where(['user_id' => Yii::$app->user->identity->getId()]);
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                ]
+            ],
+        ]);
 
-
-
-
-       // return $this->render('index');
-        return 'Hello World';
+        $image = $provider->getModels();
+        return $this->render('image', [
+            'model' => $model,
+            'image' => $image,
+        ]);
     }
-
-    public function actionHello()
+    //change image angle
+    public function actionAngle()
     {
-        return 'Hello World';
+        $model = new UploadImage();
+        if (Yii::$app->request->isPost) {
+            $param = Yii::$app->request->post();
+            if ($image = $model->changeAngle($param)) {
+                return Yii::$app->response->redirect(Url::to(['/image', ]));
+            }
+        } else {
+            return Yii::$app->response->redirect(Url::to(['/image', ]));
+        }
+
+    }
+    //delete image
+    public function actionDelete()
+    {
+        $model = new UploadImage();
+        if (Yii::$app->request->isPost) {
+            $param = Yii::$app->request->post();
+            if ($image = $model->changeAngle($param)) {
+                return Yii::$app->response->redirect(Url::to(['/image', ]));
+            }
+        } else {
+            return Yii::$app->response->redirect(Url::to(['/image', ]));
+        }
     }
 }

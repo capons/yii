@@ -17,9 +17,10 @@ class m170516_194405_create_image_table extends Migration
             'id' => $this->primaryKey(),
             'filepath' => $this->string()->notNull(),
             'user_id'  => $this->integer()->notNull(),
+            'angle'    => $this->integer()->notNull(),
 
         ]);
-        // creates index for column `author_id`
+        // creates index for column `user_id`
         $this->createIndex(
             'idx-user_id',
             'image',
@@ -31,14 +32,11 @@ class m170516_194405_create_image_table extends Migration
      * @inheritdoc
      */
     public function down()
-    { // drops index for column `author_id`
+    { // drops index for column `user_id`
         $this->dropIndex(
             'idx-user_id',
             'user'
         );
-
-
-
 
         $this->dropTable('image');
     }

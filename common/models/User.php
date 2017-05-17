@@ -7,6 +7,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
+
 /**
  * User model
  *
@@ -186,7 +187,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
-
+    //related with Image Model
     public function getImages()
     {
         return $this->hasMany(Image::className(), ['user_id' => 'id']);
